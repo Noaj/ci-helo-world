@@ -2,36 +2,35 @@
 version: 2.1
 
 jobs:
-  print_hello:
+  save_hello_world_output:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - run:
-         name: Print hello
-         command: |
-           echo "hello"  
-  print_world:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run: 
-          name: Print world
+          name: Helo world file out
           command: |
-            echo "world"
-  print_noaj:
+            echo "text to output here" > output.txt
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - output.txt
+
+  print_output_file:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      - attach_workspace:
+          at: /tmp/workspace 
       - run:
-          name: Print noaj
+          name: Read output.txt file and print whats inside.
           command: |
-            echo "I " $NOAJ            
+             cat output.txt
+                
 # Orchestrate or schedule a set of jobs
 workflows:
   default:
     jobs:
-      - print_hello
-      - print_world:
-          requires: [print_hello]
-      - print_noaj    
+      - save_hello_world_output
+      - print_output_file:
+          requires: [save_hello_world_output]
 
