@@ -9,9 +9,9 @@ jobs:
       - run:
           name: Helo world file out
           command: |
-            echo "text to output here" > output.txt
+            echo "text to output here" > ~/output.txt
       - persist_to_workspace:
-          root: /tmp
+          root: ~/
           paths:
             - output.txt
 
@@ -20,11 +20,11 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - attach_workspace:
-          at: /tmp 
+          at: ~/ 
       - run:
           name: Read output.txt file and print whats inside.
           command: |
-             cat output.txt
+             cat ~/output.txt
                 
 # Orchestrate or schedule a set of jobs
 workflows:
