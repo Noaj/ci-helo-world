@@ -20,13 +20,13 @@ jobs:
     <<: *defaults
     steps:
       - run:
-        name: This job is intended to fail
-        command: return 1
+          name: This job is intended to fail
+          command: return 1
 
       - run:
-        name: This is a rescue step if this job fails
-        command: echo The App is on fire
-        when: on_fail  
+          name: This is a rescue step if this job fails
+          command: echo The App is on fire
+          when: on_fail  
 
   # print_workflow_id:
   #   <<: *defaults
