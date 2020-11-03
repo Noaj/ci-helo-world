@@ -13,7 +13,7 @@ commands:
         type: string
         default: "Hey Hey"
     steps:
-    - run: workflow id is << parameters.to >>    
+    - run: echo workflow_id is << parameters.to >>    
 
 jobs:
   print_workflow_id:
