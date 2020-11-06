@@ -18,7 +18,7 @@ defaults: &defaults
 jobs:
   create_infrastructure:
     <<: *defaults
-    working_directory: ~/hello-world-stack
+    working_directory: ~/hello-world-stacmk
     steps:
       - checkout
       - run:
