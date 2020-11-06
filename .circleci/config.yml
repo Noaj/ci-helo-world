@@ -32,8 +32,8 @@ jobs:
           name: Create infastructure stack
           command: |
             hello-world-stack/create.sh ec2stack \
-            create-ec2.yaml \
-            create-ec2-parameters.json
+            hello-world-stack/create-ec2.yaml \
+            hello-world-stack/create-ec2-parameters.json
 
   # job_to_fail:
   #   <<: *defaults
