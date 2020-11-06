@@ -3,19 +3,30 @@ version: 2.1
 
 defaults: &defaults
   docker:
-    - image: circleci/node:13.8.0
+    - image: amazon/aws-cli
 
-commands:
-  print_pipeline_id:
-    description: prints the Circle CI Workflow ID
-    parameters:
-      to:
-        type: string
-        default: "Hey Hey"
-    steps:
-    - run: echo workflow_id is << parameters.to >>    
+# commands:
+#   print_pipeline_id:
+#     description: prints the Circle CI Workflow ID
+#     parameters:
+#       to:
+#         type: string
+#         default: "Hey Hey"
+#     steps:
+#     - run: echo workflow_id is << parameters.to >>    
 
 jobs:
+  create_infrastructure:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Create infastructure stack
+          command: |
+          ../hello-world-stack/./create.sh ec2stack \
+          ../hello-world-stack/create-ec2.yaml \
+          ../hello-world-stack/create-ec2-parameters.json
+
   # job_to_fail:
   #   <<: *defaults
   #   steps:
@@ -28,11 +39,11 @@ jobs:
   #         command: echo The App is on fire
   #         when: on_fail  
 
-  print_workflow_id:
-    <<: *defaults
-    steps:
-      - print_pipeline_id:
-          to: $CIRCLE_WORKFLOW_ID
+  # print_workflow_id:
+  #   <<: *defaults
+  #   steps:
+  #     - print_pipeline_id:
+  #         to: $CIRCLE_WORKFLOW_ID
 
   # save_hello_world_output:
   #   docker:
@@ -62,8 +73,9 @@ jobs:
 workflows:
   default:
     jobs:
+      - create_infrastructure
       # - job_to_fail
-      - print_workflow_id
+      # - print_workflow_id
       # - save_hello_world_output
       # - print_output_file:
       #     requires: [save_hello_world_output]

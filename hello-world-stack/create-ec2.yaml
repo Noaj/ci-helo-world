@@ -1,0 +1,58 @@
+Parameters:
+  EnvironmentName:
+    Description: Name of the Project
+    Type: String
+    
+  InstanceType:
+    Description: Instance Type
+    Type: String
+
+  AWSRegionArch2AMI:
+    Description: Amazon Machine Image (AMI)
+    Type: String
+
+  KeyName:
+    Description: The Key pair name 
+    Type: String
+
+  VpcId:
+    Description: VpcId ID
+    Type: String  
+
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to client host
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3000
+        ToPort: 3000
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0  
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 3000
+        ToPort: 3000
+        CidrIp: 0.0.0.0/0
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      ImageId: !Ref AWSRegionArch2AMI
+      Tags:
+        - Key: udacity_tag
+          Value: udacity
+      SecurityGroupIds:
+        - Ref: InstanceSecurityGroup
+
+Outputs:
+  EC2Instance:
+    Description: The public url to EC2
+    Value: !Join [ "", ["http://" , !GetAtt EC2Instance.PublicIp ]]

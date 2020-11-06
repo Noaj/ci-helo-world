@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "EnvironmentName",
+    "ParameterValue": "Udagram"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "AWSRegionArch2AMI",
+    "ParameterValue": "ami-0dba2cb6798deb6d8"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "udacity"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0c3f043714c1c6868"
+  }
+]
