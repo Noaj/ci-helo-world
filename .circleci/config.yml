@@ -22,6 +22,9 @@ jobs:
     steps:
       - checkout
       - run:
+        name: print latest
+        command: ls
+      - run:
           name: Add permission to create stack
           command: chmod +x create.sh
 
