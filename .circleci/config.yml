@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Create infastructure stack
           command: |
-            ./create.sh ec2stack \
+            source /hello-world-stack/./create.sh ec2stack \
             create-ec2.yaml \
             create-ec2-parameters.json
 
