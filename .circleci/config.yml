@@ -18,14 +18,15 @@ defaults: &defaults
 jobs:
   create_infrastructure:
     <<: *defaults
+    working_directory: ~/hello-world-stack
     steps:
       - checkout
       - run:
           name: Create infastructure stack
           command: |
-          ~/hello-world-stack/./create.sh ec2stack \
-          ~/hello-world-stack/create-ec2.yaml \
-          ~/hello-world-stack/create-ec2-parameters.json
+          ./create.sh ec2stack \
+          create-ec2.yaml \
+          create-ec2-parameters.json
 
   # job_to_fail:
   #   <<: *defaults
