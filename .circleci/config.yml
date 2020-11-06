@@ -18,15 +18,15 @@ defaults: &defaults
 jobs:
   create_infrastructure:
     <<: *defaults
-    working_directory: ~/hello-world-stacmk
+    working_directory: ~/hello-world-stack
     steps:
       - checkout
       - run:
-        name: print latest
-        command: ls
-      - run:
-          name: Add permission to create stack
-          command: chmod +x create.sh
+          name: print latest
+          command: ls
+      # - run:
+      #     name: Add permission to create stack
+      #     command: source /hello-world-stack/create.sh
 
       - run:
           name: Create infastructure stack
