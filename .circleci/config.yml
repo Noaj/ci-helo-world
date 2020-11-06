@@ -22,11 +22,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Add permission to create stack
+          command: chmod +x ./create.sh
+      - run:
           name: Create infastructure stack
           command: |
-          ./create.sh ec2stack \
-          create-ec2.yaml \
-          create-ec2-parameters.json
+            ./create.sh ec2stack \
+            create-ec2.yaml \
+            create-ec2-parameters.json
 
   # job_to_fail:
   #   <<: *defaults
