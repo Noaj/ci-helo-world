@@ -18,12 +18,12 @@ defaults: &defaults
 jobs:
   create_infrastructure:
     <<: *defaults
-    working_directory: ~/hello-world-stack
+    working_directory: hello-world-stack
     steps:
       - checkout
       - run:
-          name: print latest
-          command: ls
+          name: print current dir
+          command: ls hello-world-stack
       # - run:
       #     name: Add permission to create stack
       #     command: source /hello-world-stack/create.sh
@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Create infastructure stack
           command: |
-            source /hello-world-stack/create.sh ec2stack \
+            hello-world-stack/create.sh ec2stack \
             create-ec2.yaml \
             create-ec2-parameters.json
 
