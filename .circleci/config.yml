@@ -23,7 +23,7 @@ jobs:
       - checkout
       - run:
           name: Add permission to create stack
-          command: chmod +x create.sh
+          command: chmod +x ../hello-world-stack/./create.sh
 
       - run:
           name: Create infastructure stack
