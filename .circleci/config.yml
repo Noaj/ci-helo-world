@@ -3,7 +3,8 @@ version: 2.1
 
 defaults: &defaults
   docker:
-    - image: amazon/aws-cli
+    - image: python:3.7-alpine3.11
+    # - image: amazon/aws-cli
 
 # commands:
 #   print_pipeline_id:
@@ -16,24 +17,40 @@ defaults: &defaults
 #     - run: echo workflow_id is << parameters.to >>    
 
 jobs:
-  create_infrastructure:
+  configure_infrastructure:
     <<: *defaults
-    working_directory: hello-world-stack
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["87:e4:c2:6f:1d:68:88:5e:15:e5:da:fb:29:3c:59:da"]
       - run:
-          name: print current dir
-          command: ls hello-world-stack
-      # - run:
-      #     name: Add permission to create stack
-      #     command: source /hello-world-stack/create.sh
-
-      - run:
-          name: Create infastructure stack
+          name: Install dependencies
           command: |
-            hello-world-stack/create.sh ec2stack \
-            hello-world-stack/create-ec2.yaml \
-            hello-world-stack/create-ec2-parameters.json
+            apk add --update ansible
+      - run:
+          name: Configure Server
+          command: |
+            ansible-playbook \ 
+            -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
+
+  # create_infrastructure:
+  #   <<: *defaults
+  #   working_directory: hello-world-stack
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: print current dir
+  #         command: ls hello-world-stack
+  #     # - run:
+  #     #     name: Add permission to create stack
+  #     #     command: source /hello-world-stack/create.sh
+
+  #     - run:
+  #         name: Create infastructure stack
+  #         command: |
+  #           hello-world-stack/create.sh ec2stack \
+  #           hello-world-stack/create-ec2.yaml \
+  #           hello-world-stack/create-ec2-parameters.json
 
   # job_to_fail:
   #   <<: *defaults
@@ -81,7 +98,8 @@ jobs:
 workflows:
   default:
     jobs:
-      - create_infrastructure
+      - configure_infrastructure
+      # - create_infrastructure
       # - job_to_fail
       # - print_workflow_id
       # - save_hello_world_output
