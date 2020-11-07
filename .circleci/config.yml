@@ -28,10 +28,12 @@ jobs:
           command: |
             apk add --update ansible
       - run:
+          name: print working_directory
+          command: ls      
+      - run:
           name: Configure Server
           command: |
-            ansible-playbook \ 
-            -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
+            ansible-playbook -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
 
   # create_infrastructure:
   #   <<: *defaults
