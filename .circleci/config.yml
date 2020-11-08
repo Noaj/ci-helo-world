@@ -21,6 +21,6 @@ jobs:
       - destroy_environment
 
 workflows:
-  my_workflow:
+  default:
     jobs:
       - build
