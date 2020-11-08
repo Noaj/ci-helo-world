@@ -5,8 +5,7 @@ commands:
     steps:
       - run:
           name: Destroy environment
-          command: echo destroyed ec2
-          when: on_fail
+          command: echo destroied ec2
 
 jobs:
   create_infrastructure:
@@ -18,9 +17,12 @@ jobs:
           name: Create Stack
           command: echo created ec2
       - run: return 1
-      - destroy_environment
+      - run:
+          name: Destroy environment
+          command: echo destroied ec2
+          when: on_fail
 
 workflows:
-  default:
+  my_workflow:
     jobs:
       - build
