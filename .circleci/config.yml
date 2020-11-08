@@ -22,7 +22,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["87:e4:c2:6f:1d:68:88:5e:15:e5:da:fb:29:3c:59:da"]
+          fingerprints: ["aa:ba:25:18:db:4f:52:b8:c8:79:42:70:60:74:4a:29"]
       - run:
           name: Install dependencies
           command: |
