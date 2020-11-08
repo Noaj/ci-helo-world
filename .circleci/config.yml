@@ -70,10 +70,9 @@ jobs:
       #       apk add --update curl
       - run:
           name: Smoke test the site - its reachable
-          command: return 1
+          command: return 0
       - run:
           destroy_environment:
-          when: on_fail
 
             
              
