@@ -18,7 +18,7 @@ jobs:
           command: echo created ec2
       - run: return 1
       - destroy_environment
-        when: on_fail
+      when: on_fail
 
 workflows:
   my_workflow:
