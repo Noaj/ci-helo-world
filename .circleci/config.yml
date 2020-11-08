@@ -26,10 +26,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
-      - run:
-          name: print working_directory
-          command: ls      
+            apk add --update ansible      
       - run:
           name: Configure Server
           command: |
