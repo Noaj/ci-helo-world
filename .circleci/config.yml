@@ -16,60 +16,60 @@ commands:
             aws cloudformation delete-stack --stack-name udacity-${CIRCLE_WORKFLOW_ID}  
 
 jobs:
-  create_infrastructure:
-    docker:
-      - image: amazon/aws-cli
-    working_directory: hello-world-stack
-    steps:
-      - checkout
-      - run:
-          name: print current dir
-          command: ls hello-world-stack
-      - run:
-          name: Create infastructure stack
-          command: |
-            hello-world-stack/create.sh udacity-${CIRCLE_WORKFLOW_ID} \
-            hello-world-stack/create-ec2.yaml \
-            hello-world-stack/create-ec2-parameters.json
+  # create_infrastructure:
+  #   docker:
+  #     - image: amazon/aws-cli
+  #   working_directory: hello-world-stack
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: print current dir
+  #         command: ls hello-world-stack
+  #     - run:
+  #         name: Create infastructure stack
+  #         command: |
+  #           hello-world-stack/create.sh udacity-${CIRCLE_WORKFLOW_ID} \
+  #           hello-world-stack/create-ec2.yaml \
+  #           hello-world-stack/create-ec2-parameters.json
 
-  configure_infrastructure:
-    <<: *defaults
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["aa:ba:25:18:db:4f:52:b8:c8:79:42:70:60:74:4a:29"]
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-      - run:
-          name: Install aws-cli
-          command: pip install awscli      
-      - run:
-          name: Check for aws version
-          command: aws --version
-      - run:
-          name: print s3 buckets
-          command: aws s3 ls    
-      # I nned to fix this :|    
-      # - run:
-      #     name: Configure Server
-      #     command: |
-      #       ansible-playbook -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
+  # configure_infrastructure:
+  #   <<: *defaults
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys:
+  #         fingerprints: ["aa:ba:25:18:db:4f:52:b8:c8:79:42:70:60:74:4a:29"]
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           apk add --update ansible
+  #     - run:
+  #         name: Install aws-cli
+  #         command: pip install awscli      
+  #     - run:
+  #         name: Check for aws version
+  #         command: aws --version
+  #     - run:
+  #         name: print s3 buckets
+  #         command: aws s3 ls    
+  #     # I nned to fix this :|    
+  #     # - run:
+  #     #     name: Configure Server
+  #     #     command: |
+  #     #       ansible-playbook -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
 
   smoke_test:
     docker:
         - image: alpine:latest
     steps:
       - checkout
-      - run:
-          name: Add curl
-          command: |
-            apk add --update curl
+      # - run:
+      #     name: Add curl
+      #     command: |
+      #       apk add --update curl
       - run:
           name: Smoke test the site - its reachable
           command: return 1
-      - destroy_environment:
+      - destroy_environment
           when: on_fail
             
              
@@ -77,11 +77,12 @@ jobs:
 workflows:
   default:
     jobs:
-      - create_infrastructure
-      - configure_infrastructure:
-          requires: [create_infrastructure]
-      - smoke_test:
-          requires: [configure_infrastructure]
+      - smoke_test
+      # - create_infrastructure
+      # - configure_infrastructure:
+      #     requires: [create_infrastructure]
+      # - smoke_test:
+      #     requires: [configure_infrastructure]
 
       # - create_infrastructure
       # - job_to_fail
