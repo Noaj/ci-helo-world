@@ -48,6 +48,9 @@ jobs:
       - run:
           name: Check for aws version
           command: aws --version
+      - run:
+          name: print s3 buckets
+          command: aws s3 ls    
       # I nned to fix this :|    
       # - run:
       #     name: Configure Server
@@ -58,6 +61,7 @@ jobs:
     docker:
         - image: alpine:latest
     steps:
+      - checkout
       - run:
           name: Add curl
           command: |
@@ -68,10 +72,7 @@ jobs:
       - destroy_environment
         when: on_fail
             
-
-  
-
-                
+             
 # Orchestrate or schedule a set of jobs
 workflows:
   default:
