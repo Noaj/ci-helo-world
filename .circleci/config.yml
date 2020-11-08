@@ -72,6 +72,7 @@ jobs:
           name: Smoke test the site - its reachable
           command: return 0
       - destroy_environment
+        when: on_fail
 
             
              
