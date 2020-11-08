@@ -9,11 +9,17 @@ defaults: &defaults
 commands:
   destroy_environment:
     description: Destroy destroy environment if something went wrong
+    parameters:
+         to:
+           default: "world"
+           type: string
     steps:
       - run:
           name: Destrying environment
           command: |
-            aws cloudformation delete-stack --stack-name udacity-${CIRCLE_WORKFLOW_ID}  
+            echo "Hello <<parameters.to>>"
+            
+#aws cloudformation delete-stack --stack-name udacity-${CIRCLE_WORKFLOW_ID}              
 
 jobs:
   # create_infrastructure:
@@ -70,6 +76,7 @@ jobs:
           name: Smoke test the site - its reachable
           command: return 1
       - destroy_environment:
+          to: "My-Name"
         when: on_fail
             
              
