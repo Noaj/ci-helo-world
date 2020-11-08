@@ -6,17 +6,32 @@ defaults: &defaults
     - image: python:3.7-alpine3.11
     # - image: amazon/aws-cli
 
-# commands:
-#   print_pipeline_id:
-#     description: prints the Circle CI Workflow ID
-#     parameters:
-#       to:
-#         type: string
-#         default: "Hey Hey"
-#     steps:
-#     - run: echo workflow_id is << parameters.to >>    
+commands:
+  destroy_environment:
+    description: Destroy destroy environment if something went wrong
+    steps:
+      - run:
+          name: Destrying environment
+          command: |
+            aws cloudformation delete-stack --stack-name udacity-${CIRCLE_WORKFLOW_ID}  
 
 jobs:
+  create_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    working_directory: hello-world-stack
+    steps:
+      - checkout
+      - run:
+          name: print current dir
+          command: ls hello-world-stack
+      - run:
+          name: Create infastructure stack
+          command: |
+            hello-world-stack/create.sh udacity-${CIRCLE_WORKFLOW_ID} \
+            hello-world-stack/create-ec2.yaml \
+            hello-world-stack/create-ec2-parameters.json
+
   configure_infrastructure:
     <<: *defaults
     steps:
@@ -49,83 +64,24 @@ jobs:
             apk add --update curl
       - run:
           name: Smoke test the site - its reachable
-          command: |
-            URL="ec2-18-234-137-103.compute-1.amazonaws.com:3000"
-            if curl -s --head ${URL} 
-            then
-              return 0
-            else
-              return 1
-            fi
+          command: return 1
+      - destroy_environment
+        when: on_fail
+            
 
-  # create_infrastructure:
-  #   <<: *defaults
-  #   working_directory: hello-world-stack
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: print current dir
-  #         command: ls hello-world-stack
-  #     # - run:
-  #     #     name: Add permission to create stack
-  #     #     command: source /hello-world-stack/create.sh
+  
 
-  #     - run:
-  #         name: Create infastructure stack
-  #         command: |
-  #           hello-world-stack/create.sh ec2stack \
-  #           hello-world-stack/create-ec2.yaml \
-  #           hello-world-stack/create-ec2-parameters.json
-
-  # job_to_fail:
-  #   <<: *defaults
-  #   steps:
-  #     - run:
-  #         name: This job is intended to fail
-  #         command: return 1
-
-  #     - run:
-  #         name: This is a rescue step if this job fails
-  #         command: echo The App is on fire
-  #         when: on_fail  
-
-  # print_workflow_id:
-  #   <<: *defaults
-  #   steps:
-  #     - print_pipeline_id:
-  #         to: $CIRCLE_WORKFLOW_ID
-
-  # save_hello_world_output:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - run:
-  #         name: Helo world file out
-  #         command: |
-  #           echo "text to output here" > ~/output.txt
-  #     - persist_to_workspace:
-  #         root: ~/
-  #         paths:
-  #           - output.txt
-
-  # print_output_file:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - attach_workspace:
-  #         at: ~/ 
-  #     - run:
-  #         name: Read output.txt file and print whats inside.
-  #         command: |
-  #            cat ~/output.txt
                 
 # Orchestrate or schedule a set of jobs
 workflows:
   default:
     jobs:
-      - configure_infrastructure
+      - create_infrastructure
+      - configure_infrastructure:
+          requires: [create_infrastructure]
       - smoke_test:
           requires: [configure_infrastructure]
+
       # - create_infrastructure
       # - job_to_fail
       # - print_workflow_id
