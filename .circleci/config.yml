@@ -6,6 +6,7 @@ commands:
       - run:
           name: Destroy environment
           command: echo destroyed ec2
+          when: on_fail
 
 jobs:
   create_infrastructure:
@@ -18,7 +19,6 @@ jobs:
           command: echo created ec2
       - run: return 1
       - destroy_environment
-      when: on_fail
 
 workflows:
   my_workflow:
