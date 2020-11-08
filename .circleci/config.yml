@@ -77,7 +77,7 @@ jobs:
           command: return 1
       - destroy_environment:
           to: "My-Name"
-          when: on_fail
+      when: on_fail
             
              
 # Orchestrate or schedule a set of jobs
