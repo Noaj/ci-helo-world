@@ -69,9 +69,7 @@ jobs:
       - run:
           name: Smoke test the site - its reachable
           command: return 1
-      - run:
-          name: Smoke tests failed
-          - destroy_environment:
+      - destroy_environment:
           when: on_fail
             
              
