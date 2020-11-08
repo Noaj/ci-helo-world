@@ -69,8 +69,10 @@ jobs:
       - run:
           name: Smoke test the site - its reachable
           command: return 1
-      - destroy_environment:
-        when: on_fail
+      - run:
+          name: Smoke tests failed
+          - destroy_environment:
+          when: on_fail
             
              
 # Orchestrate or schedule a set of jobs
