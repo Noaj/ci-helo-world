@@ -26,7 +26,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible      
+            apk add --update ansible
+      - run:
+          name: Check for aws version
+          command: aws --version        
       - run:
           name: Configure Server
           command: |
