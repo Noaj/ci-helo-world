@@ -32,11 +32,31 @@ jobs:
           command: pip install awscli      
       - run:
           name: Check for aws version
-          command: aws --version        
+          command: aws --version
+      # I nned to fix this :|    
+      # - run:
+      #     name: Configure Server
+      #     command: |
+      #       ansible-playbook -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
+
+  smoke_test:
+    docker:
+        - image: alpine:latest
+    steps:
       - run:
-          name: Configure Server
+          name: Add curl
           command: |
-            ansible-playbook -i hello-world-playbook/inventory.txt hello-world-playbook/playbook.yml
+            apk add --update curl
+      - run:
+          name: Smoke test the site - its reachable
+          command: |
+            URL="ec2-18-234-137-103.compute-1.amazonaws.com:3000"
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
 
   # create_infrastructure:
   #   <<: *defaults
@@ -104,6 +124,8 @@ workflows:
   default:
     jobs:
       - configure_infrastructure
+      - smoke_test:
+          requires: [configure_infrastructure]
       # - create_infrastructure
       # - job_to_fail
       # - print_workflow_id
