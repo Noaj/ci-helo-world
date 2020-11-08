@@ -28,6 +28,9 @@ jobs:
           command: |
             apk add --update ansible
       - run:
+          name: Install aws-cli
+          command: apt install awscli      
+      - run:
           name: Check for aws version
           command: aws --version        
       - run:
