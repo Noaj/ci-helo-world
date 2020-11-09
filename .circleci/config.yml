@@ -52,7 +52,7 @@ jobs:
           command: aws cloudformation delete-stack --stack-name "$(cat last_deploy.txt)"
 
 
-  clean_up_old_front_end:
+  update_deploy_variable:
     docker:
        -image: amazon/aws-cli
     steps:
@@ -68,9 +68,15 @@ jobs:
   workflows:
     default:
       jobs:
-        - create_and_deploy_front_end
-        - promote_to_production
+        - get_last_deployment_id
+        - create_and_deploy_front_end:
+            requires: [get_last_deployment_id]
+        - promote_to_production:
             requires: [create_and_deploy_front_end]
+        - clean_up_old_front_end:
+            requires: [promote_to_production] 
+        - update_deploy_variable:
+            requires: [clean_up_old_front_end]       
 
 # defaults: &defaults
 #   docker:
