@@ -40,7 +40,7 @@ jobs:
 
   clean_up_old_front_end:
     docker:
-      -image: amazon/aws-cli
+      - image: amazon/aws-cli
     steps:
       - attach_workspace:
           at: ~/
