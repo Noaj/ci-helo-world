@@ -54,16 +54,16 @@ jobs:
 
   update_deploy_variable:
     docker:
-       -image: amazon/aws-cli
+       - image: amazon/aws-cli
     steps:
-      run:
-        name: Remove last_deploy.txt
-        command: |
-          rm -f last_deploy.txt
-      run:
-        name: Update last_deploy.txt
-        command: |
-          echo "${CIRCLE_WORKFLOW_ID}" >> last_deploy.txt      
+      - run:
+          name: Remove last_deploy.txt
+          command: |
+            rm -f last_deploy.txt
+      - run:
+          name: Update last_deploy.txt
+          command: |
+            echo "${CIRCLE_WORKFLOW_ID}" >> last_deploy.txt      
 
   workflows:
     default:
