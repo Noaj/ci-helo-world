@@ -2,18 +2,6 @@
 version: 2.1
 
 jobs:
-  get_last_deployment_id:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - run: |
-          aws cloudformation \
-            list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
-            --no-paginate --output text >> last_deploy.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - last_deploy.txt
                   
   create_and_deploy_front_end:
     docker:
@@ -51,31 +39,42 @@ jobs:
           name: Cleaning old prod
           command: aws cloudformation delete-stack --stack-name "$(cat last_deploy.txt)"
 
-
-  update_deploy_variable:
+  get_last_deployment_id:
     docker:
-       - image: amazon/aws-cli
+      - image: amazon/aws-cli
     steps:
-      - run:
-          name: Remove last_deploy.txt
-          command: |
-            rm -f last_deploy.txt
       - run:
           name: Update last_deploy.txt
           command: |
-            echo "${CIRCLE_WORKFLOW_ID}" >> last_deploy.txt      
+            rm -f last_deploy.txt
+
+      - run: |
+          aws cloudformation \
+            list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+            --no-paginate --output text >> last_deploy.txt       
+
+  # update_deploy_variable:
+  #   docker:
+  #      - image: amazon/aws-cli
+  #   steps:
+  #     - run:
+  #         name: Remove last_deploy.txt
+  #         command: |
+  #           rm -f last_deploy.txt
+  #     - run:
+  #         name: Update last_deploy.txt
+  #         command: |
+  #           echo "${CIRCLE_WORKFLOW_ID}" >> last_deploy.txt      
 
 workflows:
   default:
     jobs:
-      - get_last_deployment_id
-      - create_and_deploy_front_end:
-          requires: [get_last_deployment_id]
+      - create_and_deploy_front_end
       - promote_to_production:
           requires: [create_and_deploy_front_end]
       - clean_up_old_front_end:
           requires: [promote_to_production] 
-      - update_deploy_variable:
+      - get_last_deployment_id:
           requires: [clean_up_old_front_end]       
 
 # defaults: &defaults
