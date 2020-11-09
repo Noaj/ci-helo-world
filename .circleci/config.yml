@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run: |
           aws cloudformation deploy \
-            --template-file hello-world-stack/cloudformation.yml \
+            --template-file hello-world-stack/cloudfront.yml \
             --stack-name cloudfront \
             --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
